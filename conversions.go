@@ -46,10 +46,10 @@ func (c *Conversions[T, D]) AddConversion(from T, to T, conv Converter[D]) {
 }
 
 // Convert converts a value from one type to another.
-func (c *Conversions[T, D]) Convert(ctx context.Context, value D, to T) (any, error) {
+func (c *Conversions[T, D]) Convert(ctx context.Context, value D, to T) (D, error) {
 	from, err := c.typeExtractor(value)
 	if err != nil {
-		return nil, err
+		return *new(D), err
 	}
 
 	if from == to {
@@ -59,7 +59,7 @@ func (c *Conversions[T, D]) Convert(ctx context.Context, value D, to T) (any, er
 
 	conv, err := c.findConverter(from, to)
 	if err != nil {
-		return nil, err
+		return *new(D), err
 	}
 
 	return conv(ctx, value)
