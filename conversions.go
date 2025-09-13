@@ -83,7 +83,7 @@ func (c *Conversions[T, D]) findConverter(from T, to T) (Converter[D], error) {
 	// Get all converters that can convert from the source type
 	converters, ok := c.converters.Load(from)
 	if !ok {
-		return nil, fmt.Errorf("no converter found from %v to %v", from, to)
+		return nil, ErrMissingConverter
 	}
 
 	// Create a priority queue to find the shortest path
@@ -157,7 +157,7 @@ func (c *Conversions[T, D]) findConverter(from T, to T) (Converter[D], error) {
 		}
 	}
 
-	return nil, fmt.Errorf("no converter found from %v to %v", from, to)
+	return nil, ErrMissingConverter
 }
 
 type priorityQueue[T any, D any] []*queueItem[T, D]
