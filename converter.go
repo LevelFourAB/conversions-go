@@ -1,7 +1,9 @@
 package conversions
 
+import "context"
+
 // Converter represents a function that can convert a value to another value.
-type Converter[D any] func(value D) (D, error)
+type Converter[D any] func(ctx context.Context, value D) (D, error)
 
 // TypedConversion represents a conversion between two types. It extends
 // Converter with the types that the converter can convert between.

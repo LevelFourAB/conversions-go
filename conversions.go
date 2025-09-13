@@ -2,6 +2,7 @@ package conversions
 
 import (
 	"container/heap"
+	"context"
 	"fmt"
 	"sync"
 )
@@ -45,7 +46,7 @@ func (c *Conversions[T, D]) AddConversion(from T, to T, conv Converter[D]) {
 }
 
 // Convert converts a value from one type to another.
-func (c *Conversions[T, D]) Convert(value D, to T) (any, error) {
+func (c *Conversions[T, D]) Convert(ctx context.Context, value D, to T) (any, error) {
 	from, err := c.typeExtractor(value)
 	if err != nil {
 		return nil, err
@@ -61,7 +62,7 @@ func (c *Conversions[T, D]) Convert(value D, to T) (any, error) {
 		return nil, err
 	}
 
-	return conv(value)
+	return conv(ctx, value)
 }
 
 // findConverter will lookup the converter to use between two types. If no
@@ -137,12 +138,12 @@ func (c *Conversions[T, D]) findConverter(from T, to T) (Converter[D], error) {
 				// Create a new converter that will first convert to the
 				// intermediate type and then to the destination type
 				conv := func(previousConverter, nextConverter Converter[D]) Converter[D] {
-					return func(value D) (D, error) {
-						value, err := previousConverter(value)
+					return func(ctx context.Context, value D) (D, error) {
+						value, err := previousConverter(ctx, value)
 						if err != nil {
 							return *new(D), err
 						}
-						return nextConverter(value)
+						return nextConverter(ctx, value)
 					}
 				}(intermediateConverter, nextConverter)
 

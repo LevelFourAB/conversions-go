@@ -46,9 +46,9 @@ conversions, err := conversions.New(
   }),
 )
 
-conversions.AddConversion("text/html", "text/plain", func(v string) (string, error) {
+conversions.AddConversion("text/html", "text/plain", func(v StringWithMediaType) (StringWithMediaType, error) {
   // Using a hypothetical html2text package
-  return html2text.Convert(v)
+  return html2text.Convert(v.Value)
 })
 
 // Perform the conversion
