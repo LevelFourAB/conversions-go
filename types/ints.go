@@ -82,12 +82,14 @@ func withIntConversions() Option {
 		}),
 		conversions.WithConversion(reflect.TypeOf(int(0)), reflect.TypeOf(false), func(_ context.Context, v any) (any, error) {
 			i := v.(int)
-			if i == 0 {
+			switch i {
+			case 0:
 				return false, nil
-			} else if i == 1 {
+			case 1:
 				return true, nil
+			default:
+				return false, fmt.Errorf("unable to convert int to bool")
 			}
-			return false, fmt.Errorf("unable to convert int to bool")
 		}),
 	)
 }
@@ -152,12 +154,14 @@ func withInt8Conversions() Option {
 		}),
 		conversions.WithConversion(reflect.TypeOf(int8(0)), reflect.TypeOf(false), func(_ context.Context, v any) (any, error) {
 			i := v.(int8)
-			if i == 0 {
+			switch i {
+			case 0:
 				return false, nil
-			} else if i == 1 {
+			case 1:
 				return true, nil
+			default:
+				return false, fmt.Errorf("unable to convert int8 to bool")
 			}
-			return 0, fmt.Errorf("unable to convert int8 to bool")
 		}),
 	)
 }
@@ -226,12 +230,14 @@ func withInt16Conversions() Option {
 		}),
 		conversions.WithConversion(reflect.TypeOf(int16(0)), reflect.TypeOf(false), func(_ context.Context, v any) (any, error) {
 			i := v.(int16)
-			if i == 0 {
+			switch i {
+			case 0:
 				return false, nil
-			} else if i == 1 {
+			case 1:
 				return true, nil
+			default:
+				return false, fmt.Errorf("unable to convert int16 to bool")
 			}
-			return 0, fmt.Errorf("unable to convert int16 to bool")
 		}),
 	)
 }
@@ -304,12 +310,14 @@ func withInt32Conversions() Option {
 		}),
 		conversions.WithConversion(reflect.TypeOf(int32(0)), reflect.TypeOf(false), func(_ context.Context, v any) (any, error) {
 			i := v.(int32)
-			if i == 0 {
+			switch i {
+			case 0:
 				return false, nil
-			} else if i == 1 {
+			case 1:
 				return true, nil
+			default:
+				return false, fmt.Errorf("unable to convert int32 to bool")
 			}
-			return 0, fmt.Errorf("unable to convert int32 to bool")
 		}),
 	)
 }
@@ -386,12 +394,14 @@ func withInt64Conversions() Option {
 		}),
 		conversions.WithConversion(reflect.TypeOf(int64(0)), reflect.TypeOf(false), func(_ context.Context, v any) (any, error) {
 			i := v.(int64)
-			if i == 0 {
+			switch i {
+			case 0:
 				return false, nil
-			} else if i == 1 {
+			case 1:
 				return true, nil
+			default:
+				return false, fmt.Errorf("unable to convert int64 to bool")
 			}
-			return 0, fmt.Errorf("unable to convert int64 to bool")
 		}),
 	)
 }

@@ -82,12 +82,14 @@ func withUintConversions() Option {
 		}),
 		conversions.WithConversion(reflect.TypeOf(uint(0)), reflect.TypeOf(true), func(_ context.Context, v any) (any, error) {
 			i := v.(uint)
-			if i == 0 {
+			switch i {
+			case 0:
 				return false, nil
-			} else if i == 1 {
+			case 1:
 				return true, nil
+			default:
+				return false, fmt.Errorf("unable to convert uint to bool")
 			}
-			return false, fmt.Errorf("unable to convert uint to bool")
 		}),
 	)
 }
@@ -136,12 +138,14 @@ func withUint8Conversions() Option {
 		}),
 		conversions.WithConversion(reflect.TypeOf(uint8(0)), reflect.TypeOf(true), func(_ context.Context, v any) (any, error) {
 			i := v.(uint8)
-			if i == 0 {
+			switch i {
+			case 0:
 				return false, nil
-			} else if i == 1 {
+			case 1:
 				return true, nil
+			default:
+				return false, fmt.Errorf("unable to convert uint8 to bool")
 			}
-			return false, fmt.Errorf("unable to convert uint8 to bool")
 		}),
 	)
 }
@@ -198,12 +202,14 @@ func withUint16Conversions() Option {
 		}),
 		conversions.WithConversion(reflect.TypeOf(uint16(0)), reflect.TypeOf(true), func(_ context.Context, v any) (any, error) {
 			i := v.(uint16)
-			if i == 0 {
+			switch i {
+			case 0:
 				return false, nil
-			} else if i == 1 {
+			case 1:
 				return true, nil
+			default:
+				return false, fmt.Errorf("unable to convert uint16 to bool")
 			}
-			return false, fmt.Errorf("unable to convert uint16 to bool")
 		}),
 	)
 }
@@ -268,12 +274,14 @@ func withUint32Conversions() Option {
 		}),
 		conversions.WithConversion(reflect.TypeOf(uint32(0)), reflect.TypeOf(true), func(_ context.Context, v any) (any, error) {
 			i := v.(uint32)
-			if i == 0 {
+			switch i {
+			case 0:
 				return false, nil
-			} else if i == 1 {
+			case 1:
 				return true, nil
+			default:
+				return false, fmt.Errorf("unable to convert uint32 to bool")
 			}
-			return false, fmt.Errorf("unable to convert uint32 to bool")
 		}),
 	)
 }
@@ -284,7 +292,11 @@ func withUint64Conversions() Option {
 			return strconv.FormatUint(v.(uint64), 10), nil
 		}),
 		conversions.WithConversion(reflect.TypeOf(uint64(0)), reflect.TypeOf(int(0)), func(_ context.Context, v any) (any, error) {
-			return int(v.(uint64)), nil
+			i := v.(uint64)
+			if i <= math.MaxInt64 {
+				return int(i), nil
+			}
+			return 0, fmt.Errorf("unable to convert uint64 to int")
 		}),
 		conversions.WithConversion(reflect.TypeOf(uint64(0)), reflect.TypeOf(int8(0)), func(_ context.Context, v any) (any, error) {
 			i := v.(uint64)
@@ -308,7 +320,11 @@ func withUint64Conversions() Option {
 			return 0, fmt.Errorf("unable to convert uint64 to int32")
 		}),
 		conversions.WithConversion(reflect.TypeOf(uint64(0)), reflect.TypeOf(int64(0)), func(_ context.Context, v any) (any, error) {
-			return int64(v.(uint64)), nil
+			i := v.(uint64)
+			if i <= math.MaxInt64 {
+				return int64(i), nil
+			}
+			return 0, fmt.Errorf("unable to convert uint64 to int64")
 		}),
 		conversions.WithConversion(reflect.TypeOf(uint64(0)), reflect.TypeOf(uint(0)), func(_ context.Context, v any) (any, error) {
 			return uint(v.(uint64)), nil
@@ -342,12 +358,14 @@ func withUint64Conversions() Option {
 		}),
 		conversions.WithConversion(reflect.TypeOf(uint64(0)), reflect.TypeOf(true), func(_ context.Context, v any) (any, error) {
 			i := v.(uint64)
-			if i == 0 {
+			switch i {
+			case 0:
 				return false, nil
-			} else if i == 1 {
+			case 1:
 				return true, nil
+			default:
+				return false, fmt.Errorf("unable to convert uint64 to bool")
 			}
-			return false, fmt.Errorf("unable to convert uint64 to bool")
 		}),
 	)
 }
