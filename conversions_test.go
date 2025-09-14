@@ -194,4 +194,69 @@ var _ = Describe("Conversions", func() {
 			Value:     "test",
 		}))
 	})
+
+	It("can convert the same type to the same type", func(ctx context.Context) {
+		conversions, err := conversions.New(
+			conversions.WithTypeExtractor(testTypeExtractor),
+		)
+		Expect(err).ToNot(HaveOccurred())
+
+		converted, err := conversions.Convert(ctx, "test", reflect.TypeOf(""))
+		Expect(err).ToNot(HaveOccurred())
+		Expect(converted).To(Equal("test"))
+	})
+
+	It("can register and run a same type conversion for strings", func(ctx context.Context) {
+		conversions, err := conversions.New(
+			conversions.WithTypeExtractor(testTypeExtractor),
+		)
+		Expect(err).ToNot(HaveOccurred())
+
+		// Register a converter that adds a prefix to strings
+		stringToStringConverter := func(ctx context.Context, v any) (any, error) {
+			return "PREFIX_" + v.(string), nil
+		}
+
+		conversions.AddConversion(reflect.TypeOf(""), reflect.TypeOf(""), stringToStringConverter)
+
+		converted, err := conversions.Convert(ctx, "test", reflect.TypeOf(""))
+		Expect(err).ToNot(HaveOccurred())
+		Expect(converted).To(Equal("PREFIX_test"))
+	})
+
+	It("can register and run a same type conversion for integers", func(ctx context.Context) {
+		conversions, err := conversions.New(
+			conversions.WithTypeExtractor(testTypeExtractor),
+		)
+		Expect(err).ToNot(HaveOccurred())
+
+		// Register a converter that doubles the integer value
+		intToIntConverter := func(ctx context.Context, v any) (any, error) {
+			return v.(int) * 2, nil
+		}
+
+		conversions.AddConversion(reflect.TypeOf(0), reflect.TypeOf(0), intToIntConverter)
+
+		converted, err := conversions.Convert(ctx, 5, reflect.TypeOf(0))
+		Expect(err).ToNot(HaveOccurred())
+		Expect(converted).To(Equal(10))
+	})
+
+	It("same type conversion can handle errors", func(ctx context.Context) {
+		conversions, err := conversions.New(
+			conversions.WithTypeExtractor(testTypeExtractor),
+		)
+		Expect(err).ToNot(HaveOccurred())
+
+		// Register a converter that always fails
+		failingConverter := func(ctx context.Context, v any) (any, error) {
+			return nil, fmt.Errorf("conversion failed")
+		}
+
+		conversions.AddConversion(reflect.TypeOf(""), reflect.TypeOf(""), failingConverter)
+
+		_, err = conversions.Convert(ctx, "test", reflect.TypeOf(""))
+		Expect(err).To(HaveOccurred())
+		Expect(err.Error()).To(Equal("conversion failed"))
+	})
 })

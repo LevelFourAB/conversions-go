@@ -52,13 +52,15 @@ func (c *Conversions[T, D]) Convert(ctx context.Context, value D, to T) (D, erro
 		return *new(D), err
 	}
 
-	if from == to {
-		// No conversion needed
-		return value, nil
-	}
-
 	conv, err := c.findConverter(from, to)
-	if err != nil {
+	if err == ErrMissingConverter && from == to {
+		// Register a converter for faster lookups in the future
+		c.AddConversion(from, to, func(ctx context.Context, v D) (D, error) {
+			return v, nil
+		})
+
+		return value, nil
+	} else if err != nil {
 		return *new(D), err
 	}
 
